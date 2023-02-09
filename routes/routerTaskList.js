@@ -2,12 +2,14 @@ const express = require('express')
 const TaskListServices = require('../services/taskList_services')
 const { createTaskListSchema, updateTaskListSchema, getTaskList } = require('../schemas/taskListSchema')
 const validatorHandler = require('../middlewares/validator.handler')
-
+const passport = require('passport')
+const {checkAdminRole, checkRoles} = require('../middlewares/auth.handler')
 
 const router = express.Router();
 const service = new TaskListServices;
 
 router.get('/',
+  passport.authenticate('jwt', {session:false}),
   async (req, res)=> {
     const task = await service.find()
     res.json(task)
@@ -15,6 +17,7 @@ router.get('/',
 )
 
 router.get('/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getTaskList, 'params'),
   async (req, res)=> {
     const { id } = req.params;
@@ -24,6 +27,8 @@ router.get('/:id',
 )
 
 router.post('/create',
+  passport.authenticate('jwt', {session:false}),
+  checkRoles('admin','cajero'),
   validatorHandler(createTaskListSchema, 'body'),
   async (req, res)=> {
     const body = req.body;
@@ -33,6 +38,7 @@ router.post('/create',
 )
 
 router.post('/update/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getTaskList, 'params'),
   validatorHandler(updateTaskListSchema, 'body'),
   async (req, res)=> {
@@ -44,6 +50,7 @@ router.post('/update/:id',
 )
 
 router.get('/delete/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getTaskList, 'params'),
   async (req, res)=> {
     const { id } = req.params;

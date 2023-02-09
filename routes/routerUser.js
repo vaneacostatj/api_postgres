@@ -2,16 +2,20 @@ const express = require('express')
 const UserServices = require('../services/user_services')
 const validatorHandler = require('../middlewares/validator.handler')
 const { createUserSchema, updateUserSchema, getUserSchema} = require('../schemas/user.schema')
+const passport = require('passport')
 
 const router = express.Router();
 const service = new UserServices()
 
-router.get('/', async (req, res)=> {
+router.get('/',
+  passport.authenticate('jwt', {session:false}),
+  async (req, res)=> {
   const user = await service.find()
    res.json(user)
 })
 
 router.get('/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getUserSchema, 'params'),
   async (req, res)=> {
     const { id } = req.params;
@@ -21,6 +25,7 @@ router.get('/:id',
 )
 
 router.post('/create',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(createUserSchema, 'body'),
   async (req, res)=> {
     const body = req.body;
@@ -30,6 +35,7 @@ router.post('/create',
 )
 
 router.post('/update/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   async (req, res)=> {
@@ -41,6 +47,7 @@ router.post('/update/:id',
 )
 
 router.get('/delete/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getUserSchema, 'params'),
   async (req, res)=> {
   const { id } = req.params;

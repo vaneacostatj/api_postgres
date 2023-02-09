@@ -42,6 +42,13 @@ class TaskServices {
     return task
   }
 
+  async findByUser(userId){
+    const task = await models.Task.findAll({
+      where: { user_id : userId }
+    });
+    return task
+  }
+
   async update(id, changes){
     const task = await this.findOne(id);
     const response = await task.update(changes)

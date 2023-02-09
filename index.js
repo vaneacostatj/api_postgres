@@ -3,9 +3,11 @@ require('dotenv').config();
 const cors = require('cors')
 const routerApi = require('./routes/indexRouter')
 const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/error.handler')
+const {checkApiKey}= require('./middlewares/auth.handler')
 
 const app = express();
 app.use(express.json());
+require('./utils/auth')
 
 const whitelist = ['http://localhost:8080', 'https://myapp.co'];
 const options = {
@@ -18,9 +20,9 @@ const options = {
   }
 } // limita la conexión
 
-// app.get('/', (req, res)=> {
-//   res.send('hi, welcome to my Api')
-// })
+app.get('/my', (req, res)=> {
+  res.send('hi, welcome to my Api')
+})
 
 routerApi(app)
 

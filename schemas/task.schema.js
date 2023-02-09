@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 //validaciones de campos
 
-const id = Joi.string().uuid();
+const id = Joi.string();
 const taskListId = Joi.number().integer(); //Joi.string().alphanum().min(1).max(20); //sin espacios
 const userId = Joi.number().integer(); //acepta espacios
 const name = Joi.string();

@@ -13,19 +13,24 @@ const UserSchema = {
   firstName: {
     field: 'first_name',
     allowNull: false,
-    type: DataTypes.INTEGER
+    type: DataTypes.STRING
   },
 
   lastName: {
     field: 'last_name',
     allowNull: false,
-    type: DataTypes.INTEGER
+    type: DataTypes.STRING
   },
 
   email: {
     allowNull: false,
     type: DataTypes.STRING,
     unique: true
+  },
+
+  password:{
+    allowNull:false,
+    type: DataTypes.STRING
   },
 
   isRemove: {

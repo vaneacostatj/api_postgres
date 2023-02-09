@@ -2,11 +2,14 @@ const express = require('express')
 const TaskServices = require('../services/task_services')
 const validatorHandler = require('../middlewares/validator.handler')
 const { createTaskSchema, updateTaskSchema, getTask } = require('../schemas/task.schema')
+const passport = require('passport')
 
 const router = express.Router();
 const service = new TaskServices();
 
-router.get('/', async (req, res, next)=> {
+router.get('/',
+  passport.authenticate('jwt', {session:false}),
+  async (req, res, next)=> {
   try {
     const task = await service.find()
     res.json(task)
@@ -16,8 +19,9 @@ router.get('/', async (req, res, next)=> {
 })
 
 router.get('/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getTask, 'params'),
-  async (req, res)=> {
+  async (req, res, next)=> {
     try {
       const { id } = req.params;
       const task = await service.findOne(id);
@@ -29,6 +33,8 @@ router.get('/:id',
 )
 
 router.post('/create',
+//autenticación y verificación de token
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(createTaskSchema, 'body'),
   async (req, res, next)=> {
     try {
@@ -43,6 +49,7 @@ router.post('/create',
 )
 
 router.post('/update/:id',
+  passport.authenticate('jwt', {session:false}),
   validatorHandler(getTask, 'params'),
   validatorHandler(updateTaskSchema, 'body'),
   async (req, res)=> {
@@ -53,7 +60,9 @@ router.post('/update/:id',
   }
 )
 
-router.get('/delete/:id', async (req, res)=> {
+router.get('/delete/:id',
+  passport.authenticate('jwt', {session:false}),
+  async (req, res)=> {
   const { id } = req.params;
   const task = await service.delete(id)
   res.status(201).json({
